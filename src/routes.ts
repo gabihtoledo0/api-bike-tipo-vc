@@ -11,5 +11,13 @@ const routes = Router();
 routes.post("/stations", StationsController.create);
 routes.get("/stations/:id", StationsController.show);
 routes.get("/stations", StationsController.index);
+routes.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 export default routes;
