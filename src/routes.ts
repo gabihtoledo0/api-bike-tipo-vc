@@ -1,5 +1,6 @@
 import { Router } from "express";
 import StationsController from "./controller/StationsController";
+import UsersController from "./controller/UsersController";
 
 const routes = Router();
 
@@ -19,5 +20,8 @@ routes.use(function (req, res, next) {
   );
   next();
 });
+routes.post("/users", UsersController.create);
+routes.get("/users/:id", UsersController.show);
+routes.get("/users", UsersController.index);
 
 export default routes;

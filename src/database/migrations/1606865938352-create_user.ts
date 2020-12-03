@@ -24,7 +24,6 @@ export class createUser1606865938352 implements MigrationInterface {
           {
             name: "phone",
             type: "integer",
-            precision: 12,
             unsigned: true,
           },
           {
@@ -38,7 +37,7 @@ export class createUser1606865938352 implements MigrationInterface {
           {
             name: "numberCard",
             type: "integer",
-            precision: 12,
+            precision: 16,
             unsigned: true,
           },
           {
@@ -47,7 +46,8 @@ export class createUser1606865938352 implements MigrationInterface {
           },
           {
             name: "dateCard",
-            type: "datetime",
+            type: "varchar",
+            precision: 5,
           },
         ],
       })

@@ -14,6 +14,6 @@ export default {
   },
 
   renderMany(stations: Station[]) {
-    return stations.map(station => this.render(station))
-  }
+    return stations.map((station) => this.render(station));
+  },
 };

@@ -1,15 +1,10 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-} from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("users")
 export default class Station {
   @PrimaryGeneratedColumn("increment")
   id: number;
-  @Column()
+  @Column({ length: 100 })
   name: string;
   @Column()
   phone: number;
@@ -21,6 +16,6 @@ export default class Station {
   numberCard: number;
   @Column()
   nameCard: string;
-  @CreateDateColumn()
-  dateCard: Date;
+  @Column()
+  dateCard: string;
 }
