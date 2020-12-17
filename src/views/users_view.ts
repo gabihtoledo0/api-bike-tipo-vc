@@ -10,7 +10,8 @@ export default {
       senha: user.senha,
       numberCard: user.numberCard,
       nameCard: user.nameCard,
-      dateCard: user.dateCard,
+      expiry: user.expiry,
+      cvc: user.cvc,
     };
   },
 

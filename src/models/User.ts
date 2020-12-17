@@ -17,5 +17,7 @@ export default class Station {
   @Column()
   nameCard: string;
   @Column()
-  dateCard: string;
+  expiry: string;
+  @Column()
+  cvc: number;
 }

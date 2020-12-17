@@ -37,7 +37,6 @@ export class createUser1606865938352 implements MigrationInterface {
           {
             name: "numberCard",
             type: "integer",
-            precision: 16,
             unsigned: true,
           },
           {
@@ -45,10 +44,13 @@ export class createUser1606865938352 implements MigrationInterface {
             type: "varchar",
           },
           {
-            name: "dateCard",
+            name: "expiry",
             type: "varchar",
-            precision: 5,
           },
+          {
+            name: "cvc",
+            type: "integer",
+          }
         ],
       })
     );

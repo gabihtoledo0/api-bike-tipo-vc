@@ -28,7 +28,8 @@ export default {
       senha,
       numberCard,
       nameCard,
-      dateCard,
+      expiry,
+      cvc,
     } = request.body;
 
     const usersRepository = getRepository(User);
@@ -40,7 +41,8 @@ export default {
       senha,
       numberCard,
       nameCard,
-      dateCard,
+      expiry,
+      cvc,
     };
 
     const schema = Yup.object().shape({
@@ -50,7 +52,8 @@ export default {
       senha: Yup.string().required(),
       numberCard: Yup.number().required(),
       nameCard: Yup.string().required(),
-      dateCard: Yup.string().required(),
+      expiry: Yup.string().required(),
+      cvc: Yup.number().required(),
     });
 
     await schema.validate(data, {

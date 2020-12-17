@@ -12,6 +12,9 @@ const routes = Router();
 routes.post("/stations", StationsController.create);
 routes.get("/stations/:id", StationsController.show);
 routes.get("/stations", StationsController.index);
+routes.post("/users", UsersController.create);
+routes.get("/users/:id", UsersController.show);
+routes.get("/users", UsersController.index);
 routes.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -20,8 +23,5 @@ routes.use(function (req, res, next) {
   );
   next();
 });
-routes.post("/users", UsersController.create);
-routes.get("/users/:id", UsersController.show);
-routes.get("/users", UsersController.index);
 
 export default routes;
