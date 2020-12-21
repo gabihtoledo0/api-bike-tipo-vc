@@ -7,11 +7,10 @@ export default {
       name: user.name,
       email: user.email,
       phone: user.phone,
-      senha: user.senha,
+      password: user.password,
       numberCard: user.numberCard,
       nameCard: user.nameCard,
       expiry: user.expiry,
-      cvc: user.cvc,
     };
   },
 

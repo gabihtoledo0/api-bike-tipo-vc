@@ -23,21 +23,19 @@ export class createUser1606865938352 implements MigrationInterface {
           },
           {
             name: "phone",
-            type: "integer",
-            unsigned: true,
+            type: "varchar",
           },
           {
             name: "email",
             type: "varchar",
           },
           {
-            name: "senha",
+            name: "password",
             type: "varchar",
           },
           {
             name: "numberCard",
             type: "integer",
-            unsigned: true,
           },
           {
             name: "nameCard",
@@ -47,10 +45,6 @@ export class createUser1606865938352 implements MigrationInterface {
             name: "expiry",
             type: "varchar",
           },
-          {
-            name: "cvc",
-            type: "integer",
-          }
         ],
       })
     );

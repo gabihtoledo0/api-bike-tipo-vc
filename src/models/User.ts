@@ -7,17 +7,15 @@ export default class Station {
   @Column({ length: 100 })
   name: string;
   @Column()
-  phone: number;
+  phone: string;
   @Column()
   email: string;
   @Column()
-  senha: string;
+  password: string;
   @Column()
   numberCard: number;
   @Column()
   nameCard: string;
   @Column()
   expiry: string;
-  @Column()
-  cvc: number;
 }
