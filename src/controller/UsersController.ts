@@ -1,6 +1,6 @@
 import { getRepository } from "typeorm";
 import User from "../models/User";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import userView from "../views/users_view";
 import * as Yup from "yup";
 
@@ -18,6 +18,32 @@ export default {
 
     const user = await usersRepository.findOneOrFail(id);
     return response.json(userView.render(user));
+  },
+
+  async authenthication(req: Request, res: Response, next: any) {
+    const usersRepository = getRepository(User);
+
+    const { email, password } = req.body;
+
+    let existingUser;
+
+    try {
+      existingUser = await usersRepository.findOne({ email: email });
+    } catch (err) {
+      const error = res
+        .status(401)
+        .json({ message: "Login failed, please try again later." });
+      return next(error);
+    }
+
+    if (!existingUser || existingUser.password !== password) {
+      const error = res
+        .status(401)
+        .json({ message: "Invalid credentials, login failed." });
+      return next(error);
+    }
+
+    res.json({ message: "Logged in!" });
   },
 
   async create(request: Request, response: Response) {

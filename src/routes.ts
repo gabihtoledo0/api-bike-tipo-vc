@@ -15,6 +15,9 @@ routes.get("/stations", StationsController.index);
 routes.post("/users", UsersController.create);
 routes.get("/users/:id", UsersController.show);
 routes.get("/users", UsersController.index);
+
+routes.post("/users/login", UsersController.authenthication);
+
 routes.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
