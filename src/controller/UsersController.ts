@@ -1,8 +1,11 @@
 import { getRepository } from "typeorm";
 import User from "../models/User";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import userView from "../views/users_view";
 import * as Yup from "yup";
+
+const crypto = require("crypto");
+const secret = "minhastringdeseguranca101010";
 
 export default {
   async index(request: Request, response: Response) {
@@ -23,23 +26,30 @@ export default {
   async authenthication(req: Request, res: Response, next: any) {
     const usersRepository = getRepository(User);
 
-    const { email, password } = req.body;
+    const { email } = req.body;
+
+    const hash = crypto
+      .createHmac("sha256", secret)
+      .update(req.body.password)
+      .digest("hex");
 
     let existingUser;
 
     try {
-      existingUser = await usersRepository.findOne({ email: email });
+      existingUser = await usersRepository.findOne({
+        email: email,
+      });
     } catch (err) {
-      const error = res
-        .status(401)
-        .json({ message: "Login failed, please try again later." });
+      const error = res.status(401).json({
+        message: "O login falhou por favor tente novamente mais tarde.",
+      });
       return next(error);
     }
 
-    if (!existingUser || existingUser.password !== password) {
+    if (!existingUser || existingUser.password !== hash) {
       const error = res
         .status(401)
-        .json({ message: "Invalid credentials, login failed." });
+        .json({ message: "Email ou senha inválidos" });
       return next(error);
     }
 
@@ -47,15 +57,12 @@ export default {
   },
 
   async create(request: Request, response: Response) {
-    const {
-      name,
-      email,
-      phone,
-      password,
-      numberCard,
-      nameCard,
-      expiry,
-    } = request.body;
+    const hash = crypto
+      .createHmac("sha256", secret)
+      .update(request.body.password)
+      .digest("hex");
+
+    const { name, email, phone, numberCard, nameCard, expiry } = request.body;
 
     const usersRepository = getRepository(User);
 
@@ -63,7 +70,7 @@ export default {
       name,
       email,
       phone,
-      password,
+      password: hash,
       numberCard,
       nameCard,
       expiry,
@@ -86,7 +93,6 @@ export default {
     const user = usersRepository.create(data);
 
     await usersRepository.save(user);
-
     return response.status(201).json(user);
   },
 };
