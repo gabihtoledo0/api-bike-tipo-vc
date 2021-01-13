@@ -26,7 +26,7 @@ export default {
   async authenthication(req: Request, res: Response, next: any) {
     const usersRepository = getRepository(User);
 
-    const { email } = req.body;
+    const { email, id } = req.body;
 
     const hash = crypto
       .createHmac("sha256", secret)
@@ -56,7 +56,7 @@ export default {
     res.json({ message: "Logged in!" });
   },
 
-  async create(request: Request, response: Response) {
+  async create(request: Request, response: Response, next: any) {
     const hash = crypto
       .createHmac("sha256", secret)
       .update(request.body.password)
@@ -91,8 +91,27 @@ export default {
     });
 
     const user = usersRepository.create(data);
+    let existingUser;
 
-    await usersRepository.save(user);
-    return response.status(201).json(user);
+    try {
+      existingUser = await usersRepository.findOne({
+        email: email,
+      });
+    } catch (err) {
+      const error = response.status(401).json({
+        message: "O cadastro falhou por favor tente novamente mais tarde.",
+      });
+      return next(error);
+    }
+
+    if (existingUser) {
+      const error = response
+        .status(401)
+        .json({ message: "Email já cadastrado" });
+      return next(error);
+    } else {
+      await usersRepository.save(user);
+      return response.status(201).json(user);
+    }
   },
 };
