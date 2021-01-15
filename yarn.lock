@@ -1316,6 +1316,11 @@ node-pre-gyp@^0.11.0:
     semver "^5.3.0"
     tar "^4"
 
+nodejs-base64-converter@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/nodejs-base64-converter/-/nodejs-base64-converter-1.0.5.tgz#be211c1a5c0e05187b4f899683165175a35a3c2e"
+  integrity sha512-6WBDE/pWg944rvdrjw5XyhEl2mSITD25xSF38s0U0QffCniuQy0T4qY3E3K77cQjJxnvkLpsEED/PnFrj63JhQ==
+
 "nopt@2 || 3":
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/nopt/-/nopt-3.0.6.tgz#c6465dbf08abcd4db359317f79ac68a646b28ff9"

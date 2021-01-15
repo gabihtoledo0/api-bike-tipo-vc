@@ -6,6 +6,7 @@ import * as Yup from "yup";
 
 const crypto = require("crypto");
 const secret = "minhastringdeseguranca101010";
+var nodeBase64 = require("nodejs-base64-converter");
 
 export default {
   async index(request: Request, response: Response) {
@@ -17,38 +18,26 @@ export default {
 
   async show(request: Request, response: Response) {
     const { id } = request.params;
-    const hash = crypto
-      .createDecipher("sha256", secret)
-      .update(request.body.password)
-      .final("hex");
 
-    // const data = {
-    //   id,
-    //   password: hash,
-    // };
+    function hash(password: string) {
+      return nodeBase64.decode(password);
+    }
 
     const usersRepository = getRepository(User);
 
     const user = await usersRepository.findOneOrFail(id);
+
+    user.password = hash(user.password);
+
     return response.json(userView.render(user));
   },
 
   async authenthication(req: Request, res: Response, next: any) {
     const usersRepository = getRepository(User);
 
-    const { email, id } = req.body;
+    const { email } = req.body;
 
-    const hash = crypto
-      .createHmac("sha256", secret)
-      .update(req.body.password)
-      .digest("hex");
-
-    function encrypt() {
-      var cipher = crypto.createCipher("aes-256-ecb", secret);
-      return (
-        cipher.update(req.body.password, "utf8", "hex") + cipher.final("hex")
-      );
-    }
+    const hash = nodeBase64.encode(req.body.password);
 
     let existingUser;
 
@@ -63,7 +52,7 @@ export default {
       return next(error);
     }
 
-    if (!existingUser || existingUser.password !== encrypt()) {
+    if (!existingUser || existingUser.password !== hash) {
       const error = res
         .status(401)
         .json({ message: "Email ou senha inválidos" });
@@ -74,23 +63,25 @@ export default {
   },
 
   async create(request: Request, response: Response, next: any) {
-    function encrypt() {
-      var cipher = crypto.createCipher("aes-256-ecb", secret);
-      return (
-        cipher.update(request.body.password, "utf8", "hex") +
-        cipher.final("hex")
-      );
-    }
+    // function encrypt() {
+    //   var cipher = crypto.createCipher("aes-256-ecb", secret);
+    //   return (
+    //     cipher.update(request.body.password, "utf8", "hex") +
+    //     cipher.final("hex")
+    //   );
+    // }
 
     const { name, email, phone, numberCard, nameCard, expiry } = request.body;
 
     const usersRepository = getRepository(User);
 
+    const hash = nodeBase64.encode(request.body.password);
+
     const data = {
       name,
       email,
       phone,
-      password: encrypt(),
+      password: hash,
       numberCard,
       nameCard,
       expiry,
