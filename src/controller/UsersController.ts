@@ -4,8 +4,6 @@ import { Request, Response } from "express";
 import userView from "../views/users_view";
 import * as Yup from "yup";
 
-const crypto = require("crypto");
-const secret = "minhastringdeseguranca101010";
 var nodeBase64 = require("nodejs-base64-converter");
 
 export default {
@@ -63,14 +61,6 @@ export default {
   },
 
   async create(request: Request, response: Response, next: any) {
-    // function encrypt() {
-    //   var cipher = crypto.createCipher("aes-256-ecb", secret);
-    //   return (
-    //     cipher.update(request.body.password, "utf8", "hex") +
-    //     cipher.final("hex")
-    //   );
-    // }
-
     const { name, email, phone, numberCard, nameCard, expiry } = request.body;
 
     const usersRepository = getRepository(User);
