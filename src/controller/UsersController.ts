@@ -5,9 +5,10 @@ import userView from "../views/users_view";
 import * as Yup from "yup";
 
 var nodeBase64 = require("nodejs-base64-converter");
+("use strict");
 
 export default {
-  async index(request: Request, response: Response) {
+  async index(response: Response) {
     const usersRepository = getRepository(User);
 
     const users = await usersRepository.find();
@@ -28,6 +29,44 @@ export default {
     user.password = hash(user.password);
 
     return response.json(userView.render(user));
+  },
+
+  async updatedUser(request: Request, response: Response) {
+    const { id } = request.params;
+    const {
+      name,
+      email,
+      phone,
+      numberCard,
+      nameCard,
+      expiry,
+      password,
+    } = request.body;
+
+    const usersRepository = getRepository(User);
+
+    function hash(password: string) {
+      return nodeBase64.encode(password);
+    }
+
+    try {
+      const updatedUser = await usersRepository.findOneOrFail(id);
+
+      updatedUser.name = name || updatedUser.name;
+      updatedUser.email = email || updatedUser.email;
+      updatedUser.phone = phone || updatedUser.phone;
+      updatedUser.numberCard = numberCard || updatedUser.numberCard;
+      updatedUser.nameCard = nameCard || updatedUser.nameCard;
+      updatedUser.expiry = expiry || updatedUser.expiry;
+      updatedUser.password = hash(password) || updatedUser.password;
+
+      await usersRepository.save(updatedUser);
+      return response.json(updatedUser);
+    } catch {
+      return response
+        .status(400)
+        .send("Algo deu errado com a atualização de dados.");
+    }
   },
 
   async authenthication(req: Request, res: Response, next: any) {
