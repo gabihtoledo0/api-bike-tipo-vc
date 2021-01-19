@@ -18,6 +18,7 @@ routes.post("/users/login", UsersController.authenthication);
 routes.put("/users/meus-dados/:id", UsersController.updatedUser);
 routes.get("/users/:id", UsersController.show);
 routes.get("/users", UsersController.index);
+routes.delete("/users/delete/:id", UsersController.delete);
 
 routes.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");

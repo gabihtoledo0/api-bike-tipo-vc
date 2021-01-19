@@ -27,6 +27,8 @@ export default {
     const user = await usersRepository.findOneOrFail(id);
 
     user.password = hash(user.password);
+    user.nameCard = hash(user.nameCard);
+    user.expiry = hash(user.expiry);
 
     return response.json(userView.render(user));
   },
@@ -56,8 +58,8 @@ export default {
       updatedUser.email = email || updatedUser.email;
       updatedUser.phone = phone || updatedUser.phone;
       updatedUser.numberCard = numberCard || updatedUser.numberCard;
-      updatedUser.nameCard = nameCard || updatedUser.nameCard;
-      updatedUser.expiry = expiry || updatedUser.expiry;
+      updatedUser.nameCard = hash(nameCard) || updatedUser.nameCard;
+      updatedUser.expiry = hash(expiry) || updatedUser.expiry;
       updatedUser.password = hash(password) || updatedUser.password;
 
       await usersRepository.save(updatedUser);
@@ -100,20 +102,22 @@ export default {
   },
 
   async create(request: Request, response: Response, next: any) {
-    const { name, email, phone, numberCard, nameCard, expiry } = request.body;
+    const { name, email, phone, numberCard } = request.body;
 
     const usersRepository = getRepository(User);
 
-    const hash = nodeBase64.encode(request.body.password);
+    const hashPassword = nodeBase64.encode(request.body.password);
+    const hashNameCard = nodeBase64.encode(request.body.nameCard);
+    const hashExpiry = nodeBase64.encode(request.body.expiry);
 
     const data = {
       name,
       email,
       phone,
-      password: hash,
+      password: hashPassword,
       numberCard,
-      nameCard,
-      expiry,
+      nameCard: hashNameCard,
+      expiry: hashExpiry,
     };
 
     const schema = Yup.object().shape({
@@ -153,5 +157,15 @@ export default {
       await usersRepository.save(user);
       return response.status(201).json(user);
     }
+  },
+
+  async delete(request: Request, response: Response) {
+    const { id } = request.params;
+
+    const usersRepository = getRepository(User);
+
+    await usersRepository.delete(id);
+
+    return response.json({ message: "usuario deletado" });
   },
 };
