@@ -20,6 +20,27 @@ export default {
     return response.json(travel);
   },
 
+  async updatedTravel(request: Request, response: Response) {
+    const { id } = request.params;
+    const { finish_date, finish_time } = request.body;
+
+    const travelsRepository = getRepository(Travel);
+
+    try {
+      const updatedTravel = await travelsRepository.findOneOrFail(id);
+
+      updatedTravel.finish_date = finish_date || updatedTravel.finish_date;
+      updatedTravel.finish_time = finish_time || updatedTravel.finish_time;
+
+      await travelsRepository.save(updatedTravel);
+      return response.json(updatedTravel);
+    } catch {
+      return response
+        .status(400)
+        .send("Algo deu errado com a atualização de dados.");
+    }
+  },
+
   async create(request: Request, response: Response) {
     const {
       id_user,
@@ -54,10 +75,23 @@ export default {
       abortEarly: false,
     });
 
-    const travel = travelsRepository.create(data);
+    let travelIdUser;
 
-    await travelsRepository.save(travel);
+    travelIdUser = await travelsRepository.find({
+      id_user: id_user,
+      finish_time: "",
+    });
 
-    return response.status(201).json(travel);
+    if (travelIdUser === []) {
+      const travel = travelsRepository.create(data);
+
+      await travelsRepository.save(travel);
+
+      return response.status(201).json(travel);
+    } else {
+      response.status(401).json({
+        message: "Ainda temos uma viagem em andamento.",
+      });
+    }
   },
 };
