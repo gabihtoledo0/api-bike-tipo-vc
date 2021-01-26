@@ -8,7 +8,7 @@ var nodeBase64 = require("nodejs-base64-converter");
 ("use strict");
 
 export default {
-  async index(response: Response) {
+  async index(request: Request, response: Response) {
     const usersRepository = getRepository(User);
 
     const users = await usersRepository.find();
