@@ -1,6 +1,7 @@
 import { Router } from "express";
 import StationsController from "./controller/StationsController";
 import UsersController from "./controller/UsersController";
+import TravelsController from "./controller/TravelsController";
 
 const routes = Router();
 
@@ -12,6 +13,10 @@ const routes = Router();
 routes.post("/stations", StationsController.create);
 routes.get("/stations/:id", StationsController.show);
 routes.get("/stations", StationsController.index);
+
+routes.post("/travels", TravelsController.create);
+routes.get("/travels/:id_user", TravelsController.show);
+routes.get("/travels", TravelsController.index);
 
 routes.post("/users", UsersController.create);
 routes.post("/users/login", UsersController.authenthication);
