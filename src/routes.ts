@@ -12,11 +12,13 @@ const routes = Router();
 routes.post("/stations", StationsController.create);
 routes.get("/stations/:id", StationsController.show);
 routes.get("/stations", StationsController.index);
+
 routes.post("/users", UsersController.create);
+routes.post("/users/login", UsersController.authenthication);
+routes.put("/users/meus-dados/:id", UsersController.updatedUser);
 routes.get("/users/:id", UsersController.show);
 routes.get("/users", UsersController.index);
-
-routes.post("/users/login", UsersController.authenthication);
+routes.delete("/users/delete/:id", UsersController.delete);
 
 routes.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
