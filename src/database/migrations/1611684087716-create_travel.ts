@@ -22,6 +22,15 @@ export class createTravel1611684087716 implements MigrationInterface {
             type: "integer",
           },
           {
+            name: "id_initial_station",
+            type: "integer",
+          },
+          {
+            name: "id_finished_station",
+            type: "integer",
+            isNullable: true,
+          },
+          {
             name: "name_station",
             type: "varchar",
           },
@@ -36,10 +45,12 @@ export class createTravel1611684087716 implements MigrationInterface {
           {
             name: "finish_date",
             type: "varchar",
+            isNullable: true,
           },
           {
             name: "finish_time",
             type: "varchar",
+            isNullable: true,
           },
         ],
         foreignKeys: [

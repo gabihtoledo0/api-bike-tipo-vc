@@ -22,28 +22,39 @@ export default {
 
   async updatedTravel(request: Request, response: Response) {
     const { id } = request.params;
-    const { finish_date, finish_time } = request.body;
+    const { finish_date, finish_time, id_finished_station } = request.body;
 
     const travelsRepository = getRepository(Travel);
 
     try {
       const updatedTravel = await travelsRepository.findOneOrFail(id);
 
-      updatedTravel.finish_date = finish_date || updatedTravel.finish_date;
-      updatedTravel.finish_time = finish_time || updatedTravel.finish_time;
+      if (updatedTravel.id_initial_station !== id_finished_station) {
+        updatedTravel.finish_date = finish_date || updatedTravel.finish_date;
+        updatedTravel.finish_time = finish_time || updatedTravel.finish_time;
+        updatedTravel.id_finished_station =
+          id_finished_station || updatedTravel.id_finished_station;
 
-      await travelsRepository.save(updatedTravel);
-      return response.json(updatedTravel);
+        await travelsRepository.save(updatedTravel);
+        return response.json(updatedTravel);
+      } else {
+        return response.status(401).json({
+          message:
+            "Você não pode deixar sua bike na mesma estação que retirou :(",
+        });
+      }
     } catch {
       return response
         .status(400)
-        .send("Algo deu errado com a atualização de dados.");
+        .json({ message: "Algo deu errado com a atualização de dados." });
     }
   },
 
   async create(request: Request, response: Response) {
     const {
       id_user,
+      id_initial_station,
+      id_finished_station,
       name_station,
       initial_date,
       initial_time,
@@ -55,6 +66,8 @@ export default {
 
     const data = {
       id_user,
+      id_initial_station,
+      id_finished_station,
       name_station,
       initial_date,
       initial_time,
@@ -64,11 +77,13 @@ export default {
 
     const schema = Yup.object().shape({
       id_user: Yup.number().required(),
+      id_initial_station: Yup.number().required(),
+      id_finished_station: Yup.number().notRequired(),
       name_station: Yup.string().required(),
       initial_date: Yup.string().required(),
       initial_time: Yup.string().required(),
+      finish_date: Yup.string().notRequired(),
       finish_time: Yup.string().notRequired(),
-      finish_date: Yup.string().required(),
     });
 
     await schema.validate(data, {
@@ -77,12 +92,12 @@ export default {
 
     let travelIdUser;
 
-    travelIdUser = await travelsRepository.find({
+    travelIdUser = await travelsRepository.findOne({
       id_user: id_user,
       finish_time: "",
     });
 
-    if (travelIdUser === []) {
+    if (!travelIdUser) {
       const travel = travelsRepository.create(data);
 
       await travelsRepository.save(travel);

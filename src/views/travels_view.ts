@@ -5,6 +5,8 @@ export default {
     return {
       id: travel.id,
       id_user: travel.id_user,
+      id_initial_station: travel.id_initial_station,
+      id_finished_station: travel.id_finished_station,
       name_station: travel.name_station,
       initial_date: travel.initial_date,
       initial_time: travel.initial_time,
