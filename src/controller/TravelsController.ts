@@ -21,26 +21,41 @@ export default {
   },
 
   async updatedTravel(request: Request, response: Response) {
-    const { id } = request.params;
+    const { id_user } = request.params;
     const { finish_date, finish_time, id_finished_station } = request.body;
 
     const travelsRepository = getRepository(Travel);
 
+    let updatedIdUser;
+
+    updatedIdUser = await travelsRepository.findOne({
+      id_user: id_user,
+      finish_time: "",
+    });
+
     try {
-      const updatedTravel = await travelsRepository.findOneOrFail(id);
+      if (updatedIdUser) {
+        const updatedTravel = await travelsRepository.findOneOrFail(
+          updatedIdUser?.id
+        );
+        if (updatedTravel.id_initial_station !== id_finished_station) {
+          updatedTravel.finish_date = finish_date || updatedTravel.finish_date;
+          updatedTravel.finish_time = finish_time || updatedTravel.finish_time;
+          updatedTravel.id_finished_station =
+            id_finished_station || updatedTravel.id_finished_station;
 
-      if (updatedTravel.id_initial_station !== id_finished_station) {
-        updatedTravel.finish_date = finish_date || updatedTravel.finish_date;
-        updatedTravel.finish_time = finish_time || updatedTravel.finish_time;
-        updatedTravel.id_finished_station =
-          id_finished_station || updatedTravel.id_finished_station;
-
-        await travelsRepository.save(updatedTravel);
-        return response.json(updatedTravel);
+          await travelsRepository.save(updatedTravel);
+          return response.json(updatedTravel);
+        } else {
+          return response.status(401).json({
+            message:
+              "Você não pode deixar sua bike na mesma estação que retirou :(",
+          });
+        }
       } else {
-        return response.status(401).json({
+        return response.status(403).json({
           message:
-            "Você não pode deixar sua bike na mesma estação que retirou :(",
+            "Usuário não foi encontrado viajando",
         });
       }
     } catch {

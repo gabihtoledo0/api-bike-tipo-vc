@@ -17,7 +17,7 @@ routes.get("/stations", StationsController.index);
 routes.post("/travels", TravelsController.create);
 routes.get("/travels/:id_user", TravelsController.show);
 routes.get("/travels", TravelsController.index);
-routes.put("/travels/finalizar-viagem/:id", TravelsController.updatedTravel);
+routes.put("/travels/finalizar-viagem/:id_user", TravelsController.updatedTravel);
 
 routes.post("/users", UsersController.create);
 routes.post("/users/login", UsersController.authenthication);
