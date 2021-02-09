@@ -53,14 +53,14 @@ export default {
           });
         }
       } else {
-        return response.status(403).json({
+        return response.status(400).json({
           message:
             "Usuário não foi encontrado viajando",
         });
       }
     } catch {
       return response
-        .status(400)
+        .status(500)
         .json({ message: "Algo deu errado com a atualização de dados." });
     }
   },
