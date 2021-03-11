@@ -20,6 +20,50 @@ export default {
     return response.json(stationView.render(station));
   },
 
+  async removedBike(request: Request, response: Response) {
+    const { id } = request.params;
+    const stationsRepository = getRepository(Station);
+
+    const station = await stationsRepository.findOneOrFail(id);
+
+    try {
+      const decrementBike = station.bikeAvailable - 1;
+      const incrementBike = station.bikeUnavailable + 1;
+
+      station.bikeAvailable = decrementBike || station.bikeAvailable;
+      station.bikeUnavailable = incrementBike || station.bikeUnavailable;
+
+      await stationsRepository.save(station);
+      return response.json(station);
+    } catch {
+      return response
+        .status(500)
+        .json({ message: "Algo deu errado com a atualização de dados." });
+    }
+  },
+
+  async addingBike(request: Request, response: Response) {
+    const { id } = request.params;
+    const stationsRepository = getRepository(Station);
+
+    const station = await stationsRepository.findOneOrFail(id);
+
+    try {
+      const incrementBike = station.bikeAvailable + 1;
+      const decrementBike = station.bikeUnavailable - 1;
+
+      station.bikeAvailable = incrementBike || station.bikeAvailable;
+      station.bikeUnavailable = decrementBike || station.bikeUnavailable;
+
+      await stationsRepository.save(station);
+      return response.json(station);
+    } catch {
+      return response
+        .status(500)
+        .json({ message: "Algo deu errado com a atualização de dados." });
+    }
+  },
+
   async create(request: Request, response: Response) {
     const {
       name,
@@ -32,7 +76,7 @@ export default {
 
     const stationsRepository = getRepository(Station);
 
-    const data =  {
+    const data = {
       name,
       latitude,
       longitude,
